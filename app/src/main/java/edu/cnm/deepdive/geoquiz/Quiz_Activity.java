@@ -21,6 +21,8 @@ public class Quiz_Activity extends AppCompatActivity {
   private Button mNextButton;
   private Button mCheatButton;
   private TextView mQuestionTextView;
+  private TextView mCheatsRemaining;
+  private int numberCheats;
 
   private Question[] mQuestionBank = new Question[] {
       new Question(R.string.question_oceania, true),
@@ -72,13 +74,22 @@ public class Quiz_Activity extends AppCompatActivity {
       }
     });
 
+    mCheatsRemaining = findViewById(R.id.cheats_remain);
+    numberCheats = 3;
+
     mCheatButton = findViewById(R.id.cheat_button);
     mCheatButton.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View v) {
-        boolean answerIsTrue = mQuestionBank[mCurrentIndex].ismAnswerTrue();
-        Intent intent = CheatActivity.newIntent(Quiz_Activity.this, answerIsTrue);
-        startActivityForResult(intent, REQUEST_CODE_CHEAT);
+        mCheatsRemaining.setText("Cheats Remaining " + numberCheats);
+        if (numberCheats > 0) {
+          boolean answerIsTrue = mQuestionBank[mCurrentIndex].ismAnswerTrue();
+          numberCheats--;
+          Intent intent = CheatActivity.newIntent(Quiz_Activity.this, answerIsTrue);
+          startActivityForResult(intent, REQUEST_CODE_CHEAT);
+        } else {
+          Toast.makeText(Quiz_Activity.this, R.string.too_much_cheating, Toast.LENGTH_SHORT).show();
+        }
       }
     });
 
